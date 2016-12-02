@@ -12,14 +12,10 @@ public:
 	InternalTeacher();
 	InternalTeacher( unsigned int id, const std::string &firstName, const std::string &lastName );
 	virtual unsigned int getSalary()const;
+	virtual void displayTeacher()const;
 
-	static void defineGlobalSalaryInternal(unsigned int salaryInternal)
-	{ mUiSalaryInternal = salaryInternal;}
-
-	static unsigned int getInternalSalary(){ return mUiSalaryInternal;}
-
+	static void defineGlobalSalaryInternal(unsigned int salaryInternal);
 
 };
-//unsigned int InternalTeacher::mUiSalaryInternal = 0;
 
 #endif // INTERNALTEACHER_H

@@ -20,6 +20,7 @@ public:
 	const std::string &getLastName()const;
 	const std::string &getStatus()const;
 	virtual unsigned int getSalary()const = 0;
+	virtual void displayTeacher()const;
 };
 
 #endif // TEACHER_H

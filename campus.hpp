@@ -25,7 +25,7 @@ private:
 	std::string mStrTown, mStrRegion;
 	unsigned int mUiCapacity, mUiEffective = 0;
 public:
-	Campus( std::string town, std::string region, unsigned int capacity );
+	Campus(const std::__cxx11::string &town, const std::__cxx11::string &region, unsigned int capacity );
 	void editCapacity( unsigned int capacity );
 	void editVille( std::string town );
 	void editRegion( std::string region );

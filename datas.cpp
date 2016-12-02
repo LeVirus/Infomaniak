@@ -2,16 +2,20 @@
 #include "campusmanager.hpp"
 #include "campus.hpp"
 #include "student.hpp"
+#include "internalteacher.hpp"
+#include "externalteacher.hpp"
 #include <memory>
 #include <vector>
 #include <functional>
 
 
-void Datas::saveDatasFromXML(const std::string &pathFile , const CampusManager &campusManager)
+void Datas::saveDatasFromXML(const CampusManager &campusManager, const std::string &pathFile )
 {
 	std::unique_ptr< TiXmlDocument > ptrTinyXMLDoc = std::make_unique< TiXmlDocument >( pathFile );
 
-	TiXmlElement elementAdd( "Campus" ), rootNode( "Root" );
+
+	TiXmlElement campusNode( "Campus" ), rootNode( "Root" ), listStudentsNode( "ListStudents" ),
+		listTeachersNode( "ListTeachers" );
 
 	ptrTinyXMLDoc -> LoadFile();
 	ptrTinyXMLDoc -> Clear();
@@ -19,17 +23,28 @@ void Datas::saveDatasFromXML(const std::string &pathFile , const CampusManager &
 
 	for( const Campus &campus : campusManager.getAllCampus() )
 	{
-		std::cout << pathFile << "iteration campus\n";
+		//campus.displayCampus();
+		std::cout << pathFile << "iteration campus\n" << campus.getEffective() <<"\n";
 
-		elementAdd.Clear();
-		elementAdd.SetAttribute( "mStrTown"  , campus.getTown() );
-		elementAdd.SetAttribute( "mStrRegion"  , campus.getRegion() );
-		elementAdd.SetAttribute( "mUiCapacity", campus.getCapacity() );
-		elementAdd.SetAttribute( "mUiEffective", campus.getEffective() );
-		saveStudentsDatasFromXML( campus, elementAdd );
-		saveTeachersDatasFromXML( campus, elementAdd );
+		campusNode.Clear();
+		listStudentsNode.Clear();
+		listTeachersNode.Clear();
 
-		rootNode.InsertEndChild( elementAdd );
+		campusNode.SetAttribute( "mStrTown"  , campus.getTown() );
+		campusNode.SetAttribute( "mStrRegion"  , campus.getRegion() );
+		campusNode.SetAttribute( "mUiCapacity", campus.getCapacity() );
+		campusNode.SetAttribute( "mUiEffective", campus.getEffective() );
+
+		std::cout << "sss campus\n";
+
+		saveStudentsDatasFromXML( campus, listStudentsNode );
+		saveTeachersDatasFromXML( campus, listTeachersNode );
+
+		campusNode.LinkEndChild( &listStudentsNode );
+		campusNode.LinkEndChild( &listTeachersNode );
+
+		rootNode.InsertEndChild( campusNode );
+
 	}
 
 	//send datas to xml file
@@ -39,44 +54,47 @@ void Datas::saveDatasFromXML(const std::string &pathFile , const CampusManager &
 	}
 }
 
-void Datas::saveStudentsDatasFromXML( const Campus &campus, TiXmlElement &elementAdd )
+void Datas::saveStudentsDatasFromXML( const Campus &campus, TiXmlElement &listStudentsNode )
 {
 	TiXmlElement elementStudent( "Student" );
+
 	for( const Student &s : campus.getStudents() )
 	{
 		elementStudent.SetAttribute( "mUiId"  , s.getId() );
 		elementStudent.SetAttribute( "mStrFirstName"  , s.getFirstName() );
 		elementStudent.SetAttribute( "mStrLastName", s.getLastName() );
 
-		elementAdd.InsertEndChild( elementStudent );
+		listStudentsNode.InsertEndChild( elementStudent );
 	}
 }
 
-void Datas::saveTeachersDatasFromXML( const Campus &campus, TiXmlElement &elementAdd )
+void Datas::saveTeachersDatasFromXML(const Campus &campus, TiXmlElement &listTeachersNode )
 {
+	std::cout <<"proffffffffffffffff \n";
 	TiXmlElement elementTeacher( "Teacher" );
-	for( const std::reference_wrapper < Teacher > t : campus.getTeachers() )
+	for( const Teacher &t : campus.getTeachers() )
 	{
-		std::cout  << "prof it campus  \n" << t.get().getFirstName() << "\n";
+		std::cout  << t.getStatus()<< "prof it campus  \n" << t.getFirstName() << "ss\n";
 
-		elementTeacher.SetAttribute( "mUiId"  , t.get().getId() );
-		elementTeacher.SetAttribute( "mStrFirstName"  , t.get().getFirstName() );
-		elementTeacher.SetAttribute( "mStrLastName", t.get().getLastName() );
-		elementTeacher.SetAttribute( "mStrStatus", t.get().getStatus() );
-		elementTeacher.SetAttribute( "mUiSalary"  , t.get().getSalary() );
+		elementTeacher.SetAttribute( "mUiId"  , t.getId() );
+		elementTeacher.SetAttribute( "mStrFirstName"  , t.getFirstName() );
+		elementTeacher.SetAttribute( "mStrLastName", t.getLastName() );
+		elementTeacher.SetAttribute( "mStrStatus", t.getStatus() );
+		elementTeacher.SetAttribute( "mUiSalary"  , t.getSalary() );
 
-
-		elementAdd.InsertEndChild( elementTeacher );
+		listTeachersNode.InsertEndChild( elementTeacher );
 	}
 }
 
-void Datas::loadDatasFromXML(const std::string &pathFile)
+
+
+void Datas::loadDatasFromXML(CampusManager &campusManager, const std::string &pathFile)
 {
-	/*int idStudent;
-	std::string firstNameStudent, lastNameStudent;
-	TiXmlElement *elementAdd;
 	std::unique_ptr< TiXmlDocument > ptrTinyXMLDoc = std::make_unique< TiXmlDocument >( pathFile );
 	TiXmlHandle XmlHandle( ptrTinyXMLDoc.get() );
+	std::string strTown, strRegion;
+	TiXmlElement *campusNode = XmlHandle.FirstChildElement().FirstChildElement("Campus").Element();
+
 
 	if( !ptrTinyXMLDoc -> LoadFile() )
 	{
@@ -84,38 +102,100 @@ void Datas::loadDatasFromXML(const std::string &pathFile)
 					 ptrTinyXMLDoc -> ErrorDesc() << "\n";
 		return;
 	}
-
-	//get first user in the node root of xml file
-	elementAdd = XmlHandle.FirstChildElement().FirstChildElement().Element();
-
-	if( !elementAdd )
+	//root/campus
+	//campusNode = &XmlHandle.FirstChildElement().FirstChildElement("Campus");
+	if( !campusNode )
 	{
 		std::cerr << "inexistent node\n";
 		return;
 	}
-
-	while ( elementAdd )
+	//loop Campus
+	while ( campusNode )
 	{
-		idStudent = ERR_ID;
-		firstNameStudent = "";
-		lastNameStudent = "";
+		int memEffectiveCampus = 0, memCapacityCampus = 0;
 
 		//earn elements from xml file for each objects
-		if( !elementAdd -> QueryIntAttribute( "mUiId", &idStudent ) )
+		if( !campusNode -> QueryIntAttribute( "mUiCapacity", &memEffectiveCampus ) )
+		{
+			std::cout << "Error while earning campus id\n";
+		}
+
+		if( !campusNode -> QueryIntAttribute( "mUiCapacity", &memCapacityCampus ) )
+		{
+			std::cout << "Error while earning campus id\n";
+		}
+
+		strTown = campusNode -> Attribute("mStrTown");
+		strRegion = campusNode -> Attribute("mStrRegion");
+
+		//check if the arguments are corrects
+		Campus campus( strTown, strRegion, ( unsigned int )memCapacityCampus );
+
+		loadStudentsDatasFromXML( campus, *campusNode );
+		loadTeachersDatasFromXML( campus, *campusNode );
+
+		campusManager.addCampus( campus );
+
+		campusNode = campusNode -> NextSiblingElement(); // iteration
+	}
+}
+
+void Datas::loadStudentsDatasFromXML(Campus &campus, TiXmlElement &campusNode)
+{
+	int memIdStudent = 0;
+	std::string strFirstName, strLastName;
+	TiXmlElement *studentNode = campusNode.FirstChildElement("ListStudents")->FirstChildElement();
+	while ( studentNode )
+	{
+		//earn elements from xml file for each objects
+		if( !campusNode.QueryIntAttribute( "mUiId", &memIdStudent ) )
 		{
 			std::cout << "Error while earning student id\n";
 		}
-		firstNameStudent = elementAdd -> Attribute("mStrFirstName");
-		lastNameStudent = elementAdd -> Attribute("mStrLastName");
 
-		//check if the arguments are corrects
-		if( idStudent != -1 && firstNameStudent != "" && lastNameStudent != "" )
-		{
-			mVectStudents.push_back( Student( ( unsigned int )idStudent, firstNameStudent, lastNameStudent ) );
-		}
+		strFirstName = campusNode.Attribute("mStrFirstName");
+		strLastName = campusNode.Attribute("mStrLastName");
 
-		elementAdd = elementAdd -> NextSiblingElement(); // iteration
-	}*/
+		campus.addStudent( Student( (unsigned int)memIdStudent, strFirstName, strLastName ) );
+
+		studentNode = studentNode -> NextSiblingElement(); // iteration
+	}
 }
 
+void Datas::loadTeachersDatasFromXML(Campus &campus, TiXmlElement &campusNode)
+{
+	int memIdTeacher = 0, memSalary = 0;
+	std::string strFirstName, strLastName, strStatus;
+	TiXmlElement *teacherNode = campusNode.FirstChildElement("ListStudents") -> FirstChildElement();
+	while ( teacherNode )
+	{
+		//earn elements from xml file for each objects
+		if( !campusNode.QueryIntAttribute( "mUiId", &memIdTeacher ) )
+		{
+			std::cout << "Error while earning teacher id\n";
+		}
+		if( !campusNode.QueryIntAttribute( "mUiSalary", &memSalary ) )
+		{
+			std::cout << "Error while earning teacher salary\n";
+		}
+
+		strFirstName = campusNode.Attribute("mStrFirstName");
+		strLastName = campusNode.Attribute("mStrLastName");
+		strStatus = campusNode.Attribute("mStrStatus");
+
+		if( strStatus == "internal" )
+		{
+			InternalTeacher teacher( ( unsigned int )memIdTeacher, strFirstName, strLastName );
+			teacher.defineGlobalSalaryInternal( memSalary );
+			campus.addTeacher( teacher );
+		}
+		else if( strStatus == "external" )
+		{
+			ExternalTeacher teacher( ( unsigned int )memIdTeacher, strFirstName, strLastName );
+			teacher.editSalaryExternal( ( unsigned int ) memSalary );
+			campus.addTeacher( teacher );
+		}
+		teacherNode = teacherNode -> NextSiblingElement(); // iteration
+	}
+}
 

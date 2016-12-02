@@ -1,4 +1,5 @@
 #include "teacher.hpp"
+#include <iostream>
 
 
 bool Teacher::operator==(const Teacher &t)const
@@ -43,4 +44,10 @@ const std::__cxx11::string &Teacher::getLastName() const
 const std::__cxx11::string &Teacher::getStatus() const
 {
 	return mStrStatus;
+}
+
+void Teacher::displayTeacher() const
+{
+	std::cout << "mUiId : " << mUiId << " \nmStrFirstName : " << mStrFirstName <<
+		" \nmStrLastName : " << mStrLastName << "\n";
 }

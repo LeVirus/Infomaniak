@@ -45,8 +45,8 @@ const std::string &Student::getLastName()const
 
 void Student::displayStudent()const
 {
-	std::cout << "mUiId : " << getId() << " mStrFirstName : " << getFirstName() <<
-		" mStrLastName : " << getLastName() << "\n";
+	std::cout << "mUiId : " << getId() << " \nmStrFirstName : " << getFirstName() <<
+		" \nmStrLastName : " << getLastName() << "\n";
 }
 
 unsigned int Student::getId()const

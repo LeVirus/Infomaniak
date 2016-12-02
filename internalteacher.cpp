@@ -1,4 +1,7 @@
 #include "internalteacher.hpp"
+#include <iostream>
+
+unsigned int InternalTeacher::mUiSalaryInternal = 0;
 
 InternalTeacher::InternalTeacher()
 {
@@ -14,3 +17,21 @@ InternalTeacher::InternalTeacher( unsigned int id, const std::__cxx11::string &f
 	mStrLastName = lastName;
 }
 
+unsigned int InternalTeacher::getSalary() const
+{
+	return mUiSalaryInternal;
+}
+
+void InternalTeacher::displayTeacher() const
+{
+	Teacher::displayTeacher();
+	std::cout << "mUiSalaryInternal : " << mUiSalaryInternal << "\n";
+}
+
+
+
+
+void InternalTeacher::defineGlobalSalaryInternal(unsigned int salaryInternal)
+{
+	mUiSalaryInternal = salaryInternal;
+}

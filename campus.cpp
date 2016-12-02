@@ -2,7 +2,7 @@
 #include <iostream>
 #include <algorithm>
 
-Campus::Campus( std::string town, std::string region, unsigned int capacity ):
+Campus::Campus( const std::string &town, const std::string &region, unsigned int capacity ):
 	mStrTown( town ), mStrRegion( region ), mUiCapacity( capacity ),
 	mMultiSetStudents( [] ( const Student& lhs, const Student& rhs )
 	{ return lhs.getId() < rhs.getId(); } )
@@ -30,18 +30,16 @@ void Campus::displayCampus() const
 	std::cout << "Begin display students\n";
 	for( Student s : mMultiSetStudents )
 	{
-		std::cout << "mUiId : " << s.getId() << " mStrFirstName : " << s.getFirstName() <<
-			" mStrLastName : " << s.getLastName() << "\n";
+		s.displayStudent();
 	}
 	std::cout << "End display students\n";
 
 	std::cout << "Begin display teachers\n";
 	for( Teacher &t : mVectTeachers )
 	{
-		std::cout << "mUiId : " << t.getId() << " mStrFirstName : " << t.getFirstName() <<
-			" mStrLastName : " << t.getLastName() << "\n";
+		t.displayTeacher();
 	}
-	std::cout << "End display teachers\n";
+	std::cerr << "End display teachers\n";
 }
 
 bool Campus::operator==( const Campus& c )

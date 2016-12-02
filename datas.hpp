@@ -9,14 +9,15 @@ class Datas
 {
 private:
 	//TiXmlElement mTinyXMLElement;
-	void saveStudentsDatasFromXML( const Campus &campus, TiXmlElement &elementAdd );
-	void saveTeachersDatasFromXML( const Campus &campus, TiXmlElement &elementAdd );
+	void saveStudentsDatasFromXML(const Campus &campus, TiXmlElement &listStudentsNode );
+	void saveTeachersDatasFromXML( const Campus &campus, TiXmlElement &listTeachersNode );
+	void loadStudentsDatasFromXML( Campus &campus, TiXmlElement &campusNode );
+	void loadTeachersDatasFromXML( Campus &campus, TiXmlElement &campusNode );
 public:
 	Datas() = default;
-	void saveDatasFromXML( const std::string &pathFile = "doc.xml",
-						   const CampusManager &campusManager = CampusManager() );
-	void loadDatasFromXML( const std::string &pathFile = "doc.xml"
-						   /*CampusManager &campusManager*/ );
+	void saveDatasFromXML( const CampusManager &campusManager = CampusManager() ,
+						   const std::string &pathFile = "doc.xml");
+	void loadDatasFromXML( CampusManager &campusManager ,const std::string &pathFile = "doc.xml" );
 
 };
 

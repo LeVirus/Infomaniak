@@ -15,10 +15,10 @@ void School::runTest()
 
 void School::saveDatas()
 {
-	mDatas.saveDatasFromXML( "doc.xml", mCampusManager );
+	mDatas.saveDatasFromXML( mCampusManager );
 }
 
 void School::loadDatas()
 {
-	//mDatas.loadDatasFromXML( "doc.xml", mCampusManager );
+	mDatas.loadDatasFromXML( mCampusManager );
 }

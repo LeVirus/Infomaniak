@@ -11,6 +11,8 @@ public:
 	ExternalTeacher();
 	ExternalTeacher( unsigned int id, const std::string &firstName, const std::string &lastName );
 	virtual unsigned int getSalary()const;
+	virtual void displayTeacher()const;
+	void editSalaryExternal( unsigned int salary );
 };
 
 #endif // EXTERNALTEACHER_H
