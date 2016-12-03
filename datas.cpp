@@ -13,70 +13,73 @@
 
 void Datas::saveDatasFromXML( const CampusManager &campusManager, const std::string &pathFile )
 {
-	std::unique_ptr< TiXmlDocument > ptrTinyXMLDoc = std::make_unique< TiXmlDocument >( pathFile );
+	TiXmlDocument *ptrTinyXMLDoc = new TiXmlDocument( pathFile );
 
-
-	TiXmlElement campusNode( "Campus" ), rootNode( "Root" ), listStudentsNode( "ListStudents" ),
-		listTeachersNode( "ListTeachers" );
-
+	TiXmlElement *campusNode = new TiXmlElement( "Campus" ),
+				 *rootNode = new TiXmlElement( "Root" ),
+				 *listStudentsNode = new TiXmlElement( "ListStudents" ),
+				 *listTeachersNode = new TiXmlElement( "ListTeachers" );
 	ptrTinyXMLDoc -> LoadFile();
 	ptrTinyXMLDoc -> Clear();
-	ptrTinyXMLDoc -> LinkEndChild( &rootNode );
+	ptrTinyXMLDoc -> LinkEndChild( rootNode );
 
 	for( const std::unique_ptr< Campus > &campus : campusManager.getAllCampus() )
 	{
-		listStudentsNode.Clear();
-		listTeachersNode.Clear();
-		campusNode.SetAttribute( "mStrTown"  , campus -> getTown() );
-		campusNode.SetAttribute( "mStrRegion"  , campus -> getRegion() );
-		campusNode.SetAttribute( "mUiCapacity", campus -> getCapacity() );
-		campusNode.SetAttribute( "mUiEffective", campus -> getEffective() );
+		listStudentsNode -> Clear();
+		listTeachersNode -> Clear();
+		campusNode -> Clear();
+		campusNode -> SetAttribute( "mStrTown"  , campus -> getTown() );
+		campusNode -> SetAttribute( "mStrRegion"  , campus -> getRegion() );
+		campusNode -> SetAttribute( "mUiCapacity", campus -> getCapacity() );
+		campusNode -> SetAttribute( "mUiEffective", campus -> getEffective() );
 
 		saveStudentsDatasFromXML( campus, listStudentsNode );
 		saveTeachersDatasFromXML( campus, listTeachersNode );
 
-		campusNode.LinkEndChild( &listStudentsNode );
-		campusNode.LinkEndChild( &listTeachersNode );
+		campusNode -> LinkEndChild( listStudentsNode );
+		campusNode -> LinkEndChild( listTeachersNode );
 
-		rootNode.InsertEndChild( campusNode );
+		rootNode -> InsertEndChild( *campusNode );
+
 	}
 
 	//send datas to xml file
-	if( !ptrTinyXMLDoc -> SaveFile( pathFile ) )
+	if( !ptrTinyXMLDoc -> SaveFile( pathFile.c_str() ) )
 	{
 		std::cerr << "error while writing to xml file\n";
 	}
 
+
 }
 
 void Datas::saveStudentsDatasFromXML( const std::unique_ptr< Campus > &campus,
-									  TiXmlElement &listStudentsNode )
+									  TiXmlElement *listStudentsNode )
 {
-	TiXmlElement elementStudent( "Student" );
+	TiXmlElement *elementStudent = new TiXmlElement( "Student" );
 
 	for( const Student &s : campus -> getStudents() )
 	{
-		elementStudent.SetAttribute( "mUiId"  , s.getId() );
-		elementStudent.SetAttribute( "mStrFirstName"  , s.getFirstName() );
-		elementStudent.SetAttribute( "mStrLastName", s.getLastName() );
+		elementStudent -> SetAttribute( "mUiId"  , s.getId() );
+		elementStudent -> SetAttribute( "mStrFirstName"  , s.getFirstName() );
+		elementStudent -> SetAttribute( "mStrLastName", s.getLastName() );
 
-		listStudentsNode.InsertEndChild( elementStudent );
+		listStudentsNode -> InsertEndChild( *elementStudent );
 	}
 }
 
 void Datas::saveTeachersDatasFromXML(const std::unique_ptr< Campus > &campus,
-									 TiXmlElement &listTeachersNode )
+									 TiXmlElement *listTeachersNode )
 {
-	TiXmlElement elementTeacher( "Teacher" );
+	TiXmlElement *elementTeacher = new TiXmlElement( "Teacher" );
 	for( const std::unique_ptr< Teacher > &t : campus -> getTeachers() )
 	{
-		elementTeacher.SetAttribute( "mUiId"  , t -> getId() );
-		elementTeacher.SetAttribute( "mStrFirstName"  , t -> getFirstName() );
-		elementTeacher.SetAttribute( "mStrLastName", t -> getLastName() );
-		elementTeacher.SetAttribute( "mStrStatus", t -> getStatus() );
-		elementTeacher.SetAttribute( "mUiSalary"  , t -> getSalary() );
+		elementTeacher -> SetAttribute( "mUiId"  , t -> getId() );
+		elementTeacher -> SetAttribute( "mStrFirstName"  , t -> getFirstName() );
+		elementTeacher -> SetAttribute( "mStrLastName", t -> getLastName() );
+		elementTeacher -> SetAttribute( "mStrStatus", t -> getStatus() );
+		elementTeacher -> SetAttribute( "mUiSalary"  , t -> getSalary() );
 
-		listTeachersNode.InsertEndChild( elementTeacher );
+		listTeachersNode -> InsertEndChild( *elementTeacher );
 	}
 }
 
