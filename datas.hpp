@@ -8,11 +8,10 @@
 class Datas
 {
 private:
-	//TiXmlElement mTinyXMLElement;
-	void saveStudentsDatasFromXML(const Campus &campus, TiXmlElement &listStudentsNode );
-	void saveTeachersDatasFromXML( const Campus &campus, TiXmlElement &listTeachersNode );
-	void loadStudentsDatasFromXML( Campus &campus, TiXmlElement &campusNode );
-	void loadTeachersDatasFromXML( Campus &campus, TiXmlElement &campusNode );
+	void saveStudentsDatasFromXML(const std::unique_ptr<Campus> &campus, TiXmlElement &listStudentsNode );
+	void saveTeachersDatasFromXML( const std::unique_ptr<Campus> &campus, TiXmlElement &listTeachersNode );
+	void loadStudentsDatasFromXML(std::unique_ptr<Campus> &campus, TiXmlElement &campusNode );
+	void loadTeachersDatasFromXML(std::unique_ptr<Campus> &campus, TiXmlElement &campusNode );
 public:
 	Datas() = default;
 	void saveDatasFromXML( const CampusManager &campusManager = CampusManager() ,

@@ -13,8 +13,8 @@ public:
 	InternalTeacher( unsigned int id, const std::string &firstName, const std::string &lastName );
 	virtual unsigned int getSalary()const;
 	virtual void displayTeacher()const;
-
-	static void defineGlobalSalaryInternal(unsigned int salaryInternal);
+	virtual void editSalary( unsigned int salary );
+	static void defineGlobalSalaryInternal( unsigned int salaryInternal );
 
 };
 

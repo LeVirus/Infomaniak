@@ -9,7 +9,7 @@ InternalTeacher::InternalTeacher()
 }
 
 InternalTeacher::InternalTeacher( unsigned int id, const std::__cxx11::string &firstName,
-								 const std::__cxx11::string &lastName )
+								  const std::__cxx11::string &lastName )
 {
 	mStrStatus = "internal";
 	mUiId = id;
@@ -26,6 +26,11 @@ void InternalTeacher::displayTeacher() const
 {
 	Teacher::displayTeacher();
 	std::cout << "mUiSalaryInternal : " << mUiSalaryInternal << "\n";
+}
+
+void InternalTeacher::editSalary( unsigned int salary )
+{
+	defineGlobalSalaryInternal( salary );
 }
 
 

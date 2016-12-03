@@ -13,6 +13,8 @@ public:
 	virtual unsigned int getSalary()const;
 	virtual void displayTeacher()const;
 	void editSalaryExternal( unsigned int salary );
+	virtual void editSalary( unsigned int salary );
+
 };
 
 #endif // EXTERNALTEACHER_H

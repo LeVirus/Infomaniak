@@ -2,7 +2,7 @@
 #include <iostream>
 
 Student::Student( unsigned int id, const std::__cxx11::string &firstName,
-				 const std::__cxx11::string &lastName ):
+				  const std::__cxx11::string &lastName ):
 	mUiId( id ), mStrFirstName( firstName ), mStrLastName( lastName )
 {
 
@@ -46,7 +46,7 @@ const std::string &Student::getLastName()const
 void Student::displayStudent()const
 {
 	std::cout << "mUiId : " << getId() << " \nmStrFirstName : " << getFirstName() <<
-		" \nmStrLastName : " << getLastName() << "\n";
+				 " \nmStrLastName : " << getLastName() << "\n";
 }
 
 unsigned int Student::getId()const

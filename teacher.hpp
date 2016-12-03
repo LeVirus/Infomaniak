@@ -21,6 +21,7 @@ public:
 	const std::string &getStatus()const;
 	virtual unsigned int getSalary()const = 0;
 	virtual void displayTeacher()const;
+	virtual void editSalary( unsigned int salary ) = 0;
 };
 
 #endif // TEACHER_H

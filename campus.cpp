@@ -1,11 +1,13 @@
 #include "campus.hpp"
+#include "externalteacher.hpp"
+#include "internalteacher.hpp"
 #include <iostream>
 #include <algorithm>
 
 Campus::Campus( const std::string &town, const std::string &region, unsigned int capacity ):
 	mStrTown( town ), mStrRegion( region ), mUiCapacity( capacity ),
 	mMultiSetStudents( [] ( const Student& lhs, const Student& rhs )
-	{ return lhs.getId() < rhs.getId(); } )
+{ return lhs.getId() < rhs.getId(); } )
   //call constructor of multiset with Compare as Argument
 {
 }
@@ -27,19 +29,25 @@ void Campus::editRegion( std::__cxx11::string region )
 
 void Campus::displayCampus() const
 {
-	std::cout << "Begin display students\n";
+	std::cout << "Begin Campus=================================\n";
+	std::cout << "mStrTown :" << mStrTown << "\n" << "mStrRegion :" << mStrRegion << "\n" <<
+				 "mUiCapacity :" << mUiCapacity << "\n" << "mUiEffective :" <<
+				 mUiEffective << "\n";
+	std::cout << "Begin display students=====\n";
 	for( Student s : mMultiSetStudents )
 	{
 		s.displayStudent();
 	}
-	std::cout << "End display students\n";
+	std::cout << "End display students=====\n";
 
-	std::cout << "Begin display teachers\n";
-	for( Teacher &t : mVectTeachers )
+	std::cout << "Begin display teachers=====\n";
+	for( const std::unique_ptr< Teacher > &t : mVectTeachers )
 	{
-		t.displayTeacher();
+		t -> displayTeacher();
 	}
-	std::cerr << "End display teachers\n";
+	std::cout << "End display teachers=====\n";
+	std::cout << "End Campus=================================\n";
+
 }
 
 bool Campus::operator==( const Campus& c )
@@ -74,24 +82,39 @@ unsigned int Campus::getEffective() const
 	return mUiEffective;
 }
 
-unsigned int Campus::addStudent( const Student &s )
+bool Campus::addStudent( const Student &s )
 {
+	for( const Student vectStud : mMultiSetStudents )
+	{
+		if( s == vectStud )
+		{
+			return false;
+		}
+	}
 	if( mMultiSetStudents.size() >= mUiCapacity )
 	{
 		throw FullCampusException( "Campus is full\n" );
 	}
 	mMultiSetStudents.insert( s );
 	mUiEffective++;
-	return mUiEffective;
+	return true;
 }
 
-unsigned int Campus::removeStudent(const Student &s)
+bool Campus::removeStudent(const Student &s)
 {
-	if( mMultiSetStudents.erase( s ) )
+
+	for( const Student vectStud : mMultiSetStudents )
 	{
-		mUiEffective--;
+		std::cerr << vectStud.getId() << "   " << s.getId() <<"\n";
+
+		if( vectStud == s )
+		{
+			mMultiSetStudents.erase( s );
+			mUiEffective--;
+			return true;
+		}
 	}
-	return mUiEffective;
+	return false;
 }
 
 const std::multiset< Student, Compare > &Campus::getStudents() const
@@ -104,25 +127,26 @@ unsigned int Campus::getStudentsEffective() const
 	return mUiEffective;
 }
 
-unsigned int Campus::addTeacher( Teacher &t )
+unsigned int Campus::addTeacher(std::unique_ptr<Teacher> &t )
 {
-	mVectTeachers.push_back( t );
+	mVectTeachers.push_back( std::move( t ) ) ;
 	return mVectTeachers.size();
 }
 
-unsigned int Campus::removeTeacher( Teacher &t )
+bool Campus::removeTeacher(std::unique_ptr<Teacher> &t )
 {
 	for( auto it =  mVectTeachers.begin() ; it != mVectTeachers.end() ; ++it )
 	{
-		if( it.base() -> get() == t )
+		if( *it.base() -> get() == *t.get() )
 		{
 			mVectTeachers.erase( it );
+			return true;
 		}
 	}
-	return mVectTeachers.size();
+	return false;
 }
 
-const std::vector<std::reference_wrapper< Teacher > > &Campus::getTeachers() const
+const std::vector<std::unique_ptr< Teacher > > &Campus::getTeachers() const
 {
 	return mVectTeachers;
 }

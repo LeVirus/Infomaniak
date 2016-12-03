@@ -7,7 +7,7 @@ ExternalTeacher::ExternalTeacher()
 }
 
 ExternalTeacher::ExternalTeacher( unsigned int id, const std::__cxx11::string &firstName,
-								 const std::__cxx11::string &lastName )
+								  const std::__cxx11::string &lastName )
 {
 	mStrStatus = "external";
 	mUiId = id;
@@ -29,4 +29,9 @@ void ExternalTeacher::displayTeacher() const
 void ExternalTeacher::editSalaryExternal( unsigned int salary )
 {
 	mUiSalaryExternal = salary;
+}
+
+void ExternalTeacher::editSalary(unsigned int salary)
+{
+	editSalaryExternal( salary );
 }

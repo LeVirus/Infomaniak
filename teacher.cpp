@@ -49,5 +49,5 @@ const std::__cxx11::string &Teacher::getStatus() const
 void Teacher::displayTeacher() const
 {
 	std::cout << "mUiId : " << mUiId << " \nmStrFirstName : " << mStrFirstName <<
-		" \nmStrLastName : " << mStrLastName << "\n";
+				 " \nmStrLastName : " << mStrLastName << "\n";
 }

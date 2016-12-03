@@ -1,10 +1,10 @@
 #include <iostream>
 #include "school.hpp"
 
-int main(int argc, char *argv[])
+int main( int argc, char *argv[] )
 {
 	School school;
-	school.runTest();
-
+	school.testInteract();
+	//school.runTest();
 	return 0;
 }

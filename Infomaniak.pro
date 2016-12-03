@@ -9,11 +9,9 @@ SOURCES += main.cpp \
     student.cpp \
     school.cpp \
     campusmanager.cpp \
-    studentsmanager.cpp \
     teacher.cpp \
     externalteacher.cpp \
     internalteacher.cpp \
-    teachermanager.cpp \
     datas.cpp
 
 HEADERS += \
@@ -21,11 +19,9 @@ HEADERS += \
     student.hpp \
     school.hpp \
     campusmanager.hpp \
-    studentsmanager.hpp \
     teacher.hpp \
     externalteacher.hpp \
     internalteacher.hpp \
-    teachermanager.hpp \
     fullcampusException.hpp \
     constants.hpp \
     datas.hpp
